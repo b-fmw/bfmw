@@ -1,0 +1,63 @@
+/*
+ * Author: Cédric BOUHOURS
+ * This code is provided under the terms of the Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License.
+ * Attribution — You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
+ * NonCommercial — You may not use the material for commercial purposes.
+ * NoDerivatives — If you remix, transform, or build upon the material, you may not distribute the modified material.
+ * No additional restrictions — You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
+ */
+.font_small {
+    font-size: small;
+}
+
+.font_large {
+    font-size: large;
+}
+
+.font_medium {
+    font-size: medium;
+}
+
+.font_bold {
+    font-weight: bold;
+}
+
+.text_align_left {
+    text-align: left;
+}
+
+.text_align_center {
+    text-align: center;
+}
+
+.text_align_right {
+    text-align: right;
+}
+
+.text_align_justify {
+    text-align: justify;
+}
+
+.text_vertical_middle {
+    vertical-align: middle;
+}
+
+.text_vertical_bottom {
+    vertical-align: bottom;
+}
+
+.text_vertical_top {
+    vertical-align: top;
+}
+
+.text_barre {
+    text-decoration: line-through solid 2px var(--color-darkred);
+}
+
+.no_wrap {
+    white-space: nowrap;
+}
+
+.wrap {
+    white-space: normal;
+}

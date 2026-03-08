@@ -1,0 +1,53 @@
+/*
+ * Author: Cédric BOUHOURS
+ * This code is provided under the terms of the Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License.
+ * Attribution — You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
+ * NonCommercial — You may not use the material for commercial purposes.
+ * NoDerivatives — If you remix, transform, or build upon the material, you may not distribute the modified material.
+ * No additional restrictions — You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
+ */
+.bfmw_updater_simple {
+    position: absolute;
+    z-index: 10000;
+    width: min(460px, calc(100vw - 32px));
+    padding: 5px;
+    border-radius: 14px;
+    background-color: #114E7B;
+    color: #FFFFFF;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+}
+
+.bfmw_updater_p {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    text-indent: 0;
+}
+
+#bfmw_update_field_text,
+#bfmw_update_field_textarea {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #D0D8DF;
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-size: 0.95rem;
+}
+
+#bfmw_update_field_textarea {
+    min-height: 140px;
+    resize: vertical;
+}
+
+#bfmw_update_submit {
+    width: 100%;
+    margin: 8px 0 0 0;
+}
+
+.bfmw_updater_icon {
+    background-image: url("../images/icon_update.gif");
+    width: 19px;
+    height: 18px;
+    display: inline-block;
+    cursor: pointer;
+}

@@ -1,0 +1,85 @@
+/*
+ * Author: Cédric BOUHOURS
+ * This code is provided under the terms of the Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License.
+ * Attribution — You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
+ * NonCommercial — You may not use the material for commercial purposes.
+ * NoDerivatives — If you remix, transform, or build upon the material, you may not distribute the modified material.
+ * No additional restrictions — You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
+ */
+
+/*
+ * Author: Cédric BOUHOURS
+ * This code is provided under the terms of the Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License.
+ * Attribution — You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
+ * NonCommercial — You may not use the material for commercial purposes.
+ * NoDerivatives — If you remix, transform, or build upon the material, you may not distribute the modified material.
+ * No additional restrictions — You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
+ */
+
+ul[data-bfmw-treeview],
+ul[data-bfmw-treeview] ul {
+    margin: 0;
+    padding-left: 1.5rem;
+}
+
+ul[data-bfmw-treeview] li {
+    list-style: none;
+    margin: 0.15rem 0;
+}
+
+.bfmw_treeview_node {
+    color: inherit;
+}
+
+.bfmw_treeview_interactive {
+    user-select: none;
+}
+
+.bfmw_treeview_interactive > .bfmw_treeview_label,
+.bfmw_treeview_interactive.bfmw_treeview_branch::before {
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+.bfmw_treeview_label {
+    transition: color 0.2s ease;
+}
+
+.bfmw_treeview_interactive:focus-visible {
+    outline: 2px solid rgba(83, 255, 83, 0.7);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+.bfmw_treeview_branch::before,
+.bfmw_treeview_leaf::before {
+    display: inline-block;
+    width: 1.4rem;
+    margin-left: -1.4rem;
+}
+
+.bfmw_treeview_branch_open::before {
+    content: '\2796\A0';
+    text-shadow: -1px 0 #ffffff, 0 1px #ffffff, 1px 0 #ffffff, 0 -1px #ffffff;
+    white-space: nowrap;
+}
+
+.bfmw_treeview_branch_closed::before {
+    content: '\2795\A0';
+    text-shadow: -1px 0 #ffffff, 0 1px #ffffff, 1px 0 #ffffff, 0 -1px #ffffff;
+    white-space: nowrap;
+}
+
+.bfmw_treeview_leaf::before {
+    content: '\22B3\A0\A0';
+    white-space: nowrap;
+}
+
+.bfmw_treeview_interactive:hover > .bfmw_treeview_label {
+    color: #53ff53;
+}
+
+.bfmw_auto_hidder {
+    display: inline-block;
+    padding-left: 1.4rem;
+}

@@ -1,0 +1,7 @@
+<!-- IF MODE == 'form' -->
+<input type="hidden" name="encoded_parameters" value="{TOKEN}">
+<!-- ELSEIF MODE == 'parameter' -->
+&amp;encoded_parameters={TOKEN}
+<!-- ELSE -->
+data-encoded-parameters="{TOKEN}"
+<!-- ENDIF -->

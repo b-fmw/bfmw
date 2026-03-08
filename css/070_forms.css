@@ -1,0 +1,31 @@
+/*
+ * Author: Cédric BOUHOURS
+ * This code is provided under the terms of the Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License.
+ * Attribution — You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
+ * NonCommercial — You may not use the material for commercial purposes.
+ * NoDerivatives — If you remix, transform, or build upon the material, you may not distribute the modified material.
+ * No additional restrictions — You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
+ */
+button:not(.bfmw_no_style),input[type=submit]:not(.bfmw_no_style),input[type=button]:not(.bfmw_no_style) {
+    background-color: var(--color-darkgreen);
+    color: var(--color-white);
+    font-size: medium;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 50%;
+    border-radius: 10px;
+}
+
+button:hover:not(.bfmw_no_style),input[type=submit]:hover:not(.bfmw_no_style),input[type=button]:hover:not(.bfmw_no_style)  {
+    opacity: 0.8;
+}
+
+button[disabled]:not(.bfmw_no_style),input[type=submit][disabled]:not(.bfmw_no_style),input[type=button][disabled]:not(.bfmw_no_style) {
+    background-color: grey;
+    cursor: inherit;
+}
+button[disabled]:hover:not(.bfmw_no_style),input[type=submit][disabled]:hover:not(.bfmw_no_style),input[type=button][disabled]:hover:not(.bfmw_no_style) {
+    opacity: 1;
+}

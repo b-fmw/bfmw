@@ -1,0 +1,75 @@
+/*
+ * Author: Cédric BOUHOURS
+ * This code is provided under the terms of the Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License.
+ * Attribution — You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
+ * NonCommercial — You may not use the material for commercial purposes.
+ * NoDerivatives — If you remix, transform, or build upon the material, you may not distribute the modified material.
+ * No additional restrictions — You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
+ */
+.menu  {
+    overflow: hidden;
+    margin-left: 30px;
+    display: flex;
+    flex-flow: row wrap;
+}
+.menu a {
+    display: block;
+    color: var(--color-menu);
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+}
+.menu a.not_menu{
+    color: var(--color-green);
+}
+.menu a.not_menu.return_image{
+    padding: 10px 0 0 0;
+}
+.menu a.not_menu .return_image {
+    height: 30px;
+
+}
+.menu a:hover:not(.not_menu) {
+    background-color: var(--color-gray);
+    color: var(--color-black);
+}
+.menu a.active {
+    background-color: var(--color-darkgreen);
+    color: var(--color-white);
+}
+.menu .responsive_menu {
+    display: none;
+    margin-left: auto;
+}
+.menu .responsive_menu img.burger {
+    width: 20px;
+}
+
+@media screen and (max-width: 1000px) {
+    .menu:not(.responsive) a:not(:first-child):not(.responsive_menu) {display: none;}
+    .menu.responsive a {display: block;}
+    .menu.responsive a:not(:first-child):not(.responsive_menu) {width: 100%;text-align: left;}
+    .menu.responsive a:first-child {margin-left: 30px;}
+    .menu.responsive .responsive_menu {
+        position: absolute;
+        top: 0;
+        right: 0;
+    }
+    .menu .responsive_menu{
+        display: block;
+    }
+    .menu.responsive {
+        overflow: auto;
+        display: flex;
+        flex-flow: column;
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: 100%;
+        background-color: var(--background-color);
+        align-items: flex-start;
+        margin-left: 0;
+    }
+}

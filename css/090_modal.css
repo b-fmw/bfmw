@@ -1,0 +1,99 @@
+/*
+ * Author: Cédric BOUHOURS
+ * This code is provided under the terms of the Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License.
+ * Attribution — You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
+ * NonCommercial — You may not use the material for commercial purposes.
+ * NoDerivatives — If you remix, transform, or build upon the material, you may not distribute the modified material.
+ * No additional restrictions — You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
+ */
+body.bfmw-modal-open {
+    overflow: hidden;
+}
+
+.bfmw-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    inset: 0;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(1px);
+}
+
+.bfmw-modal-content {
+    position: relative;
+    background-color: var(--background-modalcontent);
+    margin: 10dvh auto 24px;
+    border: 1px solid var(--border-modalcontent);
+    width: min(720px, calc(100% - 32px));
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+    animation-name: bfmw-animatetop;
+    animation-duration: 0.5s;
+}
+
+@keyframes bfmw-animatetop {
+    from {top:-100px; opacity:0}
+    to {top:0; opacity:1}
+}
+
+#close-bfmw-modal-qlkqsdf {
+    color: white;
+    font-size: 28px;
+    font-weight: bold;
+    line-height: 1;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    order: 2;
+    text-align: end;
+    padding: 0;
+    margin: 0 0 0 auto;
+    width: fit-content;
+}
+
+#close-bfmw-modal-qlkqsdf:hover,
+#close-bfmw-modal-qlkqsdf:focus {
+    color: #000;
+    text-decoration: none;
+}
+
+.bfmw-modal-header {
+    padding: 8px 16px;
+    background-color: var(--color-darkred);
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    overflow: auto;
+}
+
+.bfmw-modal-header.is-success {
+    background-color: var(--background-success);
+}
+
+.bfmw-modal-header.is-info {
+    background-color: var(--background-info);
+}
+
+.bfmw-modal-header.is-warning {
+    background-color: var(--background-warning);
+}
+
+.bfmw-modal-header.is-error {
+    background-color: var(--color-darkred);
+}
+
+.bfmw-modal-header h2 {
+    margin: 8px 0;
+    font-size: 1.2rem;
+}
+
+.bfmw-modal-body {
+    padding: 16px;
+    color: var(--color-black);
+    overflow: auto;
+}
+
+.bfmw-modal-body p {
+    margin-top: 0;
+}

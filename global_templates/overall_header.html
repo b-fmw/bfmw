@@ -1,0 +1,58 @@
+<!--
+  ~ Author: Cédric BOUHOURS
+  ~ This code is provided under the terms of the Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License.
+  ~ Attribution — You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
+  ~ NonCommercial — You may not use the material for commercial purposes.
+  ~ NoDerivatives — If you remix, transform, or build upon the material, you may not distribute the modified material.
+  ~ No additional restrictions — You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
+  -->
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" href="{FAVICON}" type="image/x-icon">
+{BFMW_STYLE}
+        <link href="{LOCAL_STYLE}" rel="stylesheet" type="text/css">
+<!-- BEGIN specific -->
+        <link href="{SPECIFIC_STYLE}?v={SPECIFIC_STYLE_AGE}" rel="stylesheet" type="text/css">
+<!-- END specific -->
+{BFMW_JS}
+        <script src="{LOCAL_JS}" type="text/javascript"></script>
+<!-- BEGIN specific_js -->
+        <script src="{SPECIFIC_JS}?v={SPECIFIC_JS_AGE}" type="text/javascript"></script>
+<!-- END specific_js -->
+    </head>
+    <body>
+    <div id="bfmw-loading">
+        <img src="../bfmw/images/loading.gif" alt="Chargement...">
+    </div>
+    <noscript>
+        <h2 class="bfmw_noscript">Pour accéder à toutes les fonctionnalités de ce site, vous devez activer JavaScript.<br/><a href="https://www.enable-javascript.com/fr/" target="_blank">Cliquez-ici</a> pour voir les instructions pour activer JavaScript dans votre navigateur Web.</h2>
+    </noscript>
+<!-- BEGIN modal -->
+        <div class="bfmw-modal" id="myBfmwModal" role="dialog" aria-modal="true" aria-labelledby="modal_title" aria-describedby="modal_content" aria-hidden="true">
+            <div class="bfmw-modal-content">
+                <div class="bfmw-modal-header" id="Bfmw_modal_header">
+                    <h2 id="Bfmw_modal_title"></h2>
+                    <button type="button" id="close-bfmw-modal-qlkqsdf" aria-label="Fermer la fenêtre">&times;</button>
+                </div>
+                <div class="bfmw-modal-body" id="Bfmw_modal_content"></div>
+            </div>
+        </div>
+<!-- END modal -->
+<!-- BEGIN updater -->
+    <div id="bfmw_updater_simple" class="bfmw_updater_simple hide" aria-hidden="true">
+        <p class="bfmw_updater_p">
+            <input type="text" id="bfmw_update_field_text"/>
+            <textarea id="bfmw_update_field_textarea" class="hide" ></textarea>
+            <input type="hidden" id="bfmw_update_field_csrf_token" name="csrf_token" value="{TOKEN}">
+            <input type="hidden" id="bfmw_update_field_csrf_id" name="csrf_id" value="{TOKEN_ID}">
+            <input type="button" value="Valider" id="bfmw_update_submit"/>
+        </p>
+    </div>
+<!-- END updater -->
+<!-- BEGIN messages -->
+    <input type="hidden" data-bfmw-show-message data-bfmw-type="{messages.BFMW_MESSAGE_TYPE}" data-bfmw-title="{messages.BFMW_MESSAGE_TITLE}" value="{messages.BFMW_MESSAGE}">
+<!-- END messages -->
