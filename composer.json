@@ -1,5 +1,7 @@
 {
   "name": "b-fmw/bfmw",
+  "type": "framework",
+  "version": "v1.0.0-alpha",
   "description": "Simple php framework",
   "minimum-stability": "stable",
   "license": "CC-BY-NC-ND-4.0",
