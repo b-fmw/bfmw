@@ -1,2 +1,2 @@
 # bfmw
-Frameworl
+Framework
