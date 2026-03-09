@@ -1,0 +1,1 @@
+<input type="hidden" class="bfmw_refresh_dist" data-bfmw="<?php echo $send ?>" />

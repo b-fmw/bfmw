@@ -1,7 +1,6 @@
 workspace.xml
 cache
 .idea
-/*.php
 *.env
 vendor
 composer.lock
