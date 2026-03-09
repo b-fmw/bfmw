@@ -1,5 +1,5 @@
 {
-  "name": "b-fmw/bfmw",
+  "name": "bfmw",
   "type": "framework",
   "description": "Simple php framework",
   "minimum-stability": "stable",
