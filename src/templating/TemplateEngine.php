@@ -51,8 +51,9 @@ class TemplateEngine
             $this->root = $templatePath;
             $this->cachePath = $cachePath . '/tpl_';
             $this->lang = &$lang;
-        } else
-            trigger_error('TemplateEngine path could not be found: ' . $templatePath, E_USER_ERROR);
+        } else {
+            throw new \RuntimeException('TemplateEngine path could not be found: ' . $templatePath);
+        }
 
         $this->_rootref = &$this->_tpldata['.'][0];
     }
@@ -90,8 +91,9 @@ class TemplateEngine
             return false;
 
         foreach ($fileNameArray as $handle => $filename) {
-            if (empty($filename))
-                trigger_error("templating->set_filenames: Empty filename specified for $handle", E_USER_ERROR);
+            if (empty($filename)) {
+                throw new \InvalidArgumentException("templating->set_filenames: Empty filename specified for $handle");
+            }
 
             $this->fileName[$handle] = $filename;
             $this->files[$handle] = $this->root . '/' . $filename;
@@ -185,8 +187,9 @@ class TemplateEngine
             return $filename;
 
         // If we don't have a file assigned to this handle, die.
-        if (!isset($this->files[$handle]))
-            trigger_error("templating->_tpl_load(): No file specified for handle $handle", E_USER_ERROR);
+        if (!isset($this->files[$handle])) {
+            throw new \RuntimeException("templating->_tpl_load(): No file specified for handle $handle");
+        }
 
         $this->tplLoadFile($handle);
         return false;
@@ -300,7 +303,7 @@ class TemplateEngine
      * @return bool false on error, true on success
      * @access public
      */
-    public function alterBlockArray(string $blockName,array $varArray,bool $key = false,string $mode = 'insert'): bool
+    public function alterBlockArray(string $blockName, array $varArray, mixed $key = false, string $mode = 'insert'): bool
     {
         if (strpos($blockName, '.') !== false) {
             // Nested blocks are not supported
@@ -315,9 +318,14 @@ class TemplateEngine
         // Get correct position if array given
         if (is_array($key)) {
             // Search array to get correct position
-            list($search_key, $search_value) = @each($key);
+            $search_key = array_key_first($key);
+            if ($search_key === null) {
+                return false;
+            }
 
-            $key = NULL;
+            $search_value = $key[$search_key];
+
+            $key = null;
             foreach ($this->_tpldata[$blockName] as $i => $val_ary) {
                 if ($val_ary[$search_key] === $search_value) {
                     $key = $i;
@@ -326,7 +334,7 @@ class TemplateEngine
             }
 
             // key/value pair not found
-            if ($key === NULL)
+            if ($key === null)
                 return false;
         }
 
@@ -397,8 +405,9 @@ class TemplateEngine
     private function tplLoadFile(string $handle,bool $storeInDb = false): void
     {
         // Try and open templating for read
-        if (!file_exists($this->files[$handle]))
-            trigger_error("templating->_tpl_load_file(): File {$this->files[$handle]} does not exist or is empty", E_USER_ERROR);
+        if (!file_exists($this->files[$handle])) {
+            throw new \RuntimeException("templating->_tpl_load_file(): File {$this->files[$handle]} does not exist or is empty");
+        }
 
         $this->compiledCode[$handle] = $this->compile(trim(@file_get_contents($this->files[$handle])));
 
