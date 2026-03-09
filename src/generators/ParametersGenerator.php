@@ -26,7 +26,7 @@ class ParametersGenerator extends PageGenerator
      */
     public function __construct()
     {
-        parent::__construct(new Templating("template_parameters_generator", "template_parameters_generator.html","../bfmw/global_templates"));
+        parent::__construct(new Templating("template_parameters_generator", "template_parameters_generator.html",__DIR__ . "/../global_templates"));
         $this->tokenGenerator=$this->tokenGenerator??new ParametersEncoder();
     }
 

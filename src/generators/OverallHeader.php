@@ -21,6 +21,8 @@ use bfmw\templating\Templating;
  */
 class OverallHeader extends PageGenerator
 {
+    private const string PACKAGE_SOURCE_PATH = __DIR__ . '/..';
+    private const string PACKAGE_ASSET_BASE_URL = '/vendor/b_fmw/bfmw/src';
 
     /**
      * Prepares the global HTML header with shared assets and page-specific
@@ -31,7 +33,7 @@ class OverallHeader extends PageGenerator
      */
     public function __construct(Application $application, bool $withModal = true, bool $withUpdater = true)
     {
-        parent::__construct(new Templating("overall_header", "overall_header.html","../bfmw/global_templates"));
+        parent::__construct(new Templating("overall_header", "overall_header.html", self::PACKAGE_SOURCE_PATH . '/global_templates'));
 
         if (isset($_SESSION[$application->sessionPage])) {
             $nom_fichier = "css/specific_" . strtolower($_SESSION[$application->sessionPage]) . ".css";
@@ -56,11 +58,13 @@ class OverallHeader extends PageGenerator
         $local_style = "css/style.css";
         $local_js = "js/main.js";
 
-        $stylesheetGenerator = new HtmlHeadGenerator("../bfmw/css","../bfmw/css");
-        $jsGenerator = new HtmlHeadGenerator("../bfmw/js","../bfmw/js");
+        $assetBaseUrl = rtrim(getenv('BFMW_ASSET_BASE_URL') ?: self::PACKAGE_ASSET_BASE_URL, '/');
+        $stylesheetGenerator = new HtmlHeadGenerator(self::PACKAGE_SOURCE_PATH . '/css', $assetBaseUrl . '/css');
+        $jsGenerator = new HtmlHeadGenerator(self::PACKAGE_SOURCE_PATH . '/js', $assetBaseUrl . '/js');
 
         $this->engine->affectToHTML(array(
             "FAVICON" => $application->getFavIcon(),
+            "BFMW_IMAGES_BASE" => $assetBaseUrl . '/images',
             "BFMW_STYLE" => $stylesheetGenerator->generate(),
             "LOCAL_STYLE" => "$local_style?v=".filemtime($local_style),
             "BFMW_JS" => $jsGenerator->generate(),

@@ -27,7 +27,7 @@ class CsrfGenerator extends PageGenerator
      */
     public function __construct()
     {
-        parent::__construct(new Templating("template_csrf", "template_csrf.html","../bfmw/global_templates"));
+        parent::__construct(new Templating("template_csrf", "template_csrf.html",__DIR__ . "/../global_templates"));
         $this->tokenGenerator=$this->tokenGenerator??new Csrf();
     }
 

@@ -87,22 +87,7 @@ abstract class Application
     public static function init(string $classPath = "/../"): void
     {
         self::$classPath = $classPath;
-        spl_autoload_register([self::class, 'autoload']);
         self::$globalHelpers = new Helpers();
-    }
-
-    /**
-     * Automatic class loader.
-     *
-     * @param string $class Fully qualified name of the class to load.
-     * @return void
-     */
-    private static function autoload(string $class): void
-    {
-        $path = __DIR__ . self::$classPath . str_replace('\\', '/', $class) . '.php';
-        if (is_file($path)) {
-            require $path;
-        }
     }
 
     /**

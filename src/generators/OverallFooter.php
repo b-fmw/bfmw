@@ -28,7 +28,7 @@ class OverallFooter extends PageGenerator
      */
     public function __construct(Application $application)
     {
-        parent::__construct(new Templating("overall_footer", "overall_footer.html","../bfmw/global_templates"));
+        parent::__construct(new Templating("overall_footer", "overall_footer.html",__DIR__ . "/../global_templates"));
         $this->engine->generateCompleteHTML();
         $application::$dataHelpers->disconnect();
 
