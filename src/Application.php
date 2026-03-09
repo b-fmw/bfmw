@@ -94,7 +94,7 @@ abstract class Application
      */
     private static function autoload(string $class): void
     {
-        $path = str_replace('\\', '/', $class) . '.php';
+        $path = "../".str_replace('\\', '/', $class) . '.php';
         if (is_file($path)) {
             require $path;
         }
