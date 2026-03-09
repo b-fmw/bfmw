@@ -22,7 +22,7 @@ use bfmw\templating\Templating;
 class OverallHeader extends PageGenerator
 {
     private const string PACKAGE_SOURCE_PATH = __DIR__ . '/..';
-    private const string PACKAGE_ASSET_BASE_URL = '/vendor/b_fmw/bfmw/src';
+    private const string PACKAGE_ASSET_BASE_URL = '../vendor/b_fmw/bfmw/src';
 
     /**
      * Prepares the global HTML header with shared assets and page-specific

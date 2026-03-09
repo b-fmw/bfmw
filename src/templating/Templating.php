@@ -73,7 +73,8 @@ class Templating
             $this->template->setFileNames(array($this->identificatorName => $filePath));
             $today = new DateTime();
             $this->affectToHTML(array(
-                "BFMW_GLOBAL_DAYTIME" => mktime(0, 0, 0, $today->format("m"), $today->format("d"), $today->format("Y"))
+                "BFMW_GLOBAL_DAYTIME" => mktime(0, 0, 0, $today->format("m"), $today->format("d"), $today->format("Y")),
+                "BFMW_ASSETS_BASE" => "../vendor/b_fmw/bfmw/src/images"
             ));
         }
     }

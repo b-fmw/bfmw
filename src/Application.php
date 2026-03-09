@@ -45,10 +45,7 @@ abstract class Application
      * Default page name.
      */
     private const string DEFAULT_GENERATOR = "Accueil";
-    /**
-     * Relative path for class autoloading.
-     */
-    private static string $classPath;
+
     /**
      * Global helpers instance.
      * @var Helpers
@@ -81,13 +78,26 @@ abstract class Application
      * Configures the autoloader and instantiates global helpers.
      * Must be called before instantiating the class.
      *
-     * @param string $classPath Relative path to the class root (default: "/../").
      * @return void
      */
-    public static function init(string $classPath = "/../"): void
+    public static function init(): void
     {
-        self::$classPath = $classPath;
+        spl_autoload_register([self::class,'autoload']);
         self::$globalHelpers = new Helpers();
+    }
+
+    /**
+     * Automatic class loader.
+     *
+     * @param string $class Fully qualified name of the class to load.
+     * @return void
+     */
+    private static function autoload(string $class): void
+    {
+        $path = str_replace('\\', '/', $class) . '.php';
+        if (is_file($path)) {
+            require $path;
+        }
     }
 
     /**
