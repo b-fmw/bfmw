@@ -8,35 +8,29 @@
  * No additional restrictions — You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
  */
 
-namespace b_fmw\bfmw\core;
 
-use bfmw\generators\CsrfGenerator;
-use bfmw\generators\ParametersGenerator;
+namespace bfmw\generators;
+
+use bfmw\Application;
+use bfmw\core\PageGenerator;
 use bfmw\templating\Templating;
 
 /**
- * Class PageGenerator
- *
- * Abstract base class for all page controllers/generators.
- * It holds the reference to the templating engine used to render the page.
- *
- * @package bfmw\core
+ * Renders the global page footer and closes shared resources.
  */
-abstract class PageGenerator
+class OverallFooter extends PageGenerator
 {
     /**
-     * The templating engine instance.
-     * @var Templating
-     */
-    protected Templating $engine;
-
-    /**
-     * PageGenerator constructor.
+     * Renders the shared footer and terminates the database connection.
      *
-     * @param Templating $engine The templating engine instance handling the view.
+     * @param Application $application Current application, used to access the
+     *                                 global database helper.
      */
-    public function __construct(Templating $engine)
+    public function __construct(Application $application)
     {
-        $this->engine = $engine;
+        parent::__construct(new Templating("overall_footer", "overall_footer.html","../bfmw/global_templates"));
+        $this->engine->generateCompleteHTML();
+        $application::$dataHelpers->disconnect();
+
     }
 }

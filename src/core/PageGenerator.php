@@ -8,27 +8,35 @@
  * No additional restrictions — You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
  */
 
-namespace b_fmw\bfmw\repository;
+namespace bfmw\core;
 
-use bfmw\core\DBConnector;
+use bfmw\generators\CsrfGenerator;
+use bfmw\generators\ParametersGenerator;
+use bfmw\templating\Templating;
 
 /**
- * Base class for repositories relying on a shared database connector.
+ * Class PageGenerator
+ *
+ * Abstract base class for all page controllers/generators.
+ * It holds the reference to the templating engine used to render the page.
+ *
+ * @package bfmw\core
  */
-abstract class AbstractRepository
+abstract class PageGenerator
 {
-    protected DBConnector $connector;
+    /**
+     * The templating engine instance.
+     * @var Templating
+     */
+    protected Templating $engine;
 
     /**
-     * Base repository constructor storing the shared database connector.
+     * PageGenerator constructor.
      *
-     * @param DBConnector $connector Active database adapter used by child
-     *                               repositories for queries.
+     * @param Templating $engine The templating engine instance handling the view.
      */
-    public function __construct(DBConnector $connector)
+    public function __construct(Templating $engine)
     {
-        $this->connector = $connector;
+        $this->engine = $engine;
     }
-
-
 }

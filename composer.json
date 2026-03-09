@@ -15,5 +15,10 @@
     "ext-mysqli": "*",
     "ext-intl": "*",
     "ext-simplexml": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "bfmw": "src/"
+    }
   }
 }

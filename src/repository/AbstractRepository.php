@@ -8,29 +8,27 @@
  * No additional restrictions — You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
  */
 
+namespace bfmw\repository;
 
-namespace b_fmw\bfmw\generators;
-
-use bfmw\Application;
-use bfmw\core\PageGenerator;
-use bfmw\templating\Templating;
+use bfmw\core\DBConnector;
 
 /**
- * Renders the global page footer and closes shared resources.
+ * Base class for repositories relying on a shared database connector.
  */
-class OverallFooter extends PageGenerator
+abstract class AbstractRepository
 {
-    /**
-     * Renders the shared footer and terminates the database connection.
-     *
-     * @param Application $application Current application, used to access the
-     *                                 global database helper.
-     */
-    public function __construct(Application $application)
-    {
-        parent::__construct(new Templating("overall_footer", "overall_footer.html","../bfmw/global_templates"));
-        $this->engine->generateCompleteHTML();
-        $application::$dataHelpers->disconnect();
+    protected DBConnector $connector;
 
+    /**
+     * Base repository constructor storing the shared database connector.
+     *
+     * @param DBConnector $connector Active database adapter used by child
+     *                               repositories for queries.
+     */
+    public function __construct(DBConnector $connector)
+    {
+        $this->connector = $connector;
     }
+
+
 }

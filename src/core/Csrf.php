@@ -8,24 +8,29 @@
  * No additional restrictions — You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
  */
 
-namespace b_fmw\bfmw\core;
+namespace bfmw\core;
 
 use Random\RandomException;
 
-final class ParametersEncoder
+final class Csrf
 {
-    private const SESSION_KEY = '__params_encoder_tokens';
+    private const SESSION_KEY = '__csrf_tokens';
 
     /**
-     * Creates a token associated with a parameter payload.
+     * Creates a CSRF token manager backed by session storage.
+     */
+    public function __construct() {}
+
+    /**
+     * Creates a CSRF token for a specific context.
      *
-     * @param array $params Parameters to store in session.
+     * @param string $id Context identifier (for example: "delete-user").
      * @param int $ttlSeconds Token lifetime in seconds (0 means no expiration).
-     * @param bool $oneTime When true, token is consumed after first read.
-     * @return string Generated token.
+     * @param bool $oneTime When true, the token is consumed after validation.
+     * @return string The generated token value.
      * @throws RandomException
      */
-    public function token(array $params, int $ttlSeconds = 3600, bool $oneTime = true): string
+    public function token(string $id = 'default', int $ttlSeconds = 3600, bool $oneTime = true): string
     {
         if (!isset($_SESSION[self::SESSION_KEY]) || !is_array($_SESSION[self::SESSION_KEY])) {
             $_SESSION[self::SESSION_KEY] = [];
@@ -33,8 +38,8 @@ final class ParametersEncoder
 
         $token = bin2hex(random_bytes(32));
 
-        $_SESSION[self::SESSION_KEY][$token] = [
-            'parameters'   => $params,
+        $_SESSION[self::SESSION_KEY][$id] = [
+            'token'   => $token,
             'expires' => $ttlSeconds > 0 ? (time() + $ttlSeconds) : 0,
             'oneTime' => $oneTime,
         ];
@@ -43,44 +48,52 @@ final class ParametersEncoder
     }
 
     /**
-     * Resolves a token back to its stored parameter payload.
+     * Validates a CSRF token sent through POST fields.
      *
-     * @param string $token Token to resolve.
-     * @return array|null Stored parameters, or null if token is invalid/expired.
+     * @return bool True when the token is valid, false otherwise.
      */
-    public function getParams(string $token): ?array
+    public function validateFromPost(): bool
     {
         $this->purgeExpired();
 
-        if ($token === '') {
-            return null;
+        $token = $_POST['bfmw_orig_csrf_token'] ?? '';
+        $id    = $_POST['bfmw_orig_csrf_id'] ?? 'default';
+
+        if (!is_string($token) || !is_string($id) || $token === '') {
+            return false;
         }
 
         $store = $_SESSION[self::SESSION_KEY] ?? null;
-        if (!is_array($store) || !isset($store[$token])) {
-            return null;
+        if (!is_array($store) || !isset($store[$id])) {
+            return false;
         }
 
-        $entry = $store[$token];
-        if (!is_array($entry) || !isset($entry['parameters'])) {
-            return null;
+        $entry = $store[$id];
+        if (!is_array($entry) || !isset($entry['token'])) {
+            return false;
         }
 
+        // Token expiration check
         $expires = (int)($entry['expires'] ?? 0);
         if ($expires > 0 && time() > $expires) {
-            unset($_SESSION[self::SESSION_KEY][$token]);
-            return null;
+            unset($_SESSION[self::SESSION_KEY][$id]);
+            return false;
         }
 
-        if ($entry['oneTime'] ?? true) {
-            unset($_SESSION[self::SESSION_KEY][$token]);
+        // Constant-time comparison
+        $ok = hash_equals((string)$entry['token'], $token);
+
+        // One-time token consumption
+        $oneTime = (bool)($entry['oneTime'] ?? true);
+        if ($ok && $oneTime) {
+            unset($_SESSION[self::SESSION_KEY][$id]);
         }
 
-        return $entry['parameters'];
+        return $ok;
     }
 
     /**
-     * Removes expired parameter tokens from session storage.
+     * Removes expired tokens from session storage.
      */
     private function purgeExpired(): void
     {
@@ -94,13 +107,5 @@ final class ParametersEncoder
                 unset($_SESSION[self::SESSION_KEY][$id]);
             }
         }
-    }
-
-    /**
-     * Clears all stored parameter tokens.
-     */
-    public function cleanAllParameters(): void
-    {
-        unset($_SESSION[self::SESSION_KEY]);
     }
 }
