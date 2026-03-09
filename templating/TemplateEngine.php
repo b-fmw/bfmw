@@ -8,7 +8,7 @@
  *
  */
 
-namespace bfmw\templating;
+namespace b_fmw\bfmw\templating;
 
 /**
  * Base TemplateEngine class.

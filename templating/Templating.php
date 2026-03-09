@@ -8,7 +8,7 @@
  * No additional restrictions — You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
  */
 
-namespace bfmw\templating;
+namespace b_fmw\bfmw\templating;
 
 use bfmw\core\Comparator;
 use bfmw\core\Csrf;

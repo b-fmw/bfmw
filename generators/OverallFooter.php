@@ -9,7 +9,7 @@
  */
 
 
-namespace bfmw\generators;
+namespace b_fmw\bfmw\generators;
 
 use bfmw\Application;
 use bfmw\core\PageGenerator;

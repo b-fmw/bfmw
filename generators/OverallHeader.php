@@ -8,7 +8,7 @@
  * No additional restrictions — You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
  */
 
-namespace bfmw\generators;
+namespace b_fmw\bfmw\generators;
 
 use bfmw\Application;
 use bfmw\core\Helpers;

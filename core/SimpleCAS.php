@@ -8,7 +8,7 @@
  * No additional restrictions — You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
  */
 
-namespace bfmw\core;
+namespace b_fmw\bfmw\core;
 
 use RuntimeException;
 use SimpleXMLElement;
