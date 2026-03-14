@@ -1,0 +1,25 @@
+<div class="main">
+    <div class="limited text_align_center">
+        <a href="?p=Forms{BFMW_PARAMETER_CHECKER_DELETE}"  {TOKEN_CSRF_DELETE_LINK} data-bfmw-method="DELETE"><img src="{BFMW_ASSETS_BASE}/icon_delete.gif" alt="supprimer"/></a>
+        <label class="green">Nom de la formation :&nbsp;</label>
+        <span class="bfmw_updater_icon" data-bfmw-updater data-bfmw-modifier="demo_form_name" {TOKEN_CSRF_PARAM} {BFMW_PARAMETER_CHECKER}></span>
+        <span id="demo_form_name">BUT Informatique</span>
+        <br/>
+        <label class="green">Description de la formation :&nbsp;</label>
+        <span class="bfmw_updater_icon" data-bfmw-updater data-bfmw-area="1" data-bfmw-modifier="demo_form_description" {TOKEN_CSRF_PARAM} {BFMW_PARAMETER_CHECKER}></span>
+        <p id="demo_form_description">BUT Informatique, c'est génial - BUT Informatique, c'est génial - BUT Informatique, c'est génial - BUT Informatique, c'est génial - BUT Informatique, c'est génial - BUT Informatique, c'est génial -</p>
+        <form action="?p=Forms" method="POST">
+            <label for="id_nom">Indiquez votre nom :&nbsp;</label>
+            <input type="text" name="nom"/><br/>
+            <input type="submit" value="Envoyer"/>
+            {TOKEN_CSRF}
+            {BFMW_PARAMETER_CHECK_MODIFY_NOM}
+        </form><br/>
+        <span>Champ en binding direct :&nbsp;</span><input type="text" value="valeur initiale" data-bfmw-binding  {TOKEN_CSRF_PARAM} {BFMW_PARAMETER_BINDING} /><br/>
+        <span>Champ en binding direct :&nbsp;</span><input type="checkbox" data-bfmw-manual-binding  {TOKEN_CSRF_PARAM} {BFMW_PARAMETER2_BINDING} />
+        <img id="id_binding_validator_done" src="{BFMW_ASSETS_BASE}/tick.png" alt="done" class="specific_forms_binding_validator hide"/>
+        <img id="id_binding_validator_fail" src="{BFMW_ASSETS_BASE}/croix.png" alt="fail" class="specific_forms_binding_validator hide"/>
+        <br/>
+        <span>Champ en binding direct :&nbsp;</span><select data-bfmw-binding  {TOKEN_CSRF_PARAM} {BFMW_PARAMETER_BINDING} ><option value="1" selected>Coucou</option><option value="2">Tata</option></select><br/>
+    </div>
+</div>
