@@ -1,73 +1,138 @@
-# BFMW usage example (`applicationTest`)
+# BFMW — guide d'utilisation à partir de l'exemple `applicationTest`
 
-This document describes **only** the `applicationTest` example available in this repository.
+Ce README documente **l'utilisation du framework BFMW** à partir de l'application d'exemple contenue dans `applicationTest`.
 
-## Example purpose
+> Note dépôt : le fichier composer est volontairement nommé `_composer.json` pour que Packagist ignore cette branche d'exemple.
 
-This example shows how to assemble a complete BFMW application with:
-- an entry point (`applicationTest/index.php`);
-- a concrete application class (`ApplicationDeTest`);
-- a custom authenticator (`ApplicationTestAuthenticator`);
-- an interceptor for forms and bindings (`ApplicationTestInterceptor`);
-- multiple page generators (`applicationTest/generators/*`);
-- related templates, CSS, and JS assets.
+## 1) Démarrer l'exemple
 
-## Running the example
-
-1. Install dependencies:
+1. Installer les dépendances :
    ```bash
    composer install
    ```
-2. Configure the expected environment file (`.env`).
-3. Point your web server to `applicationTest/index.php`.
+2. Préparer le fichier d'environnement `.env` attendu par l'application.
+3. Pointer le serveur web vers `applicationTest/index.php`.
 
-## Execution flow
+## 2) Cycle de vie BFMW dans l'exemple
 
-1. `applicationTest/index.php` initializes BFMW with `Application::init()`.
-2. The app instantiates `ApplicationDeTest` with an authenticator, DB connector, and interceptor.
-3. `ApplicationDeTest::run()` builds the global header, menu, active page, and footer.
-4. `ApplicationTestInterceptor` can short-circuit routing to process POST and asynchronous binding requests.
+### Point d'entrée
 
-## Documentation coverage for example classes and methods
+Le fichier `applicationTest/index.php` :
+- charge l'autoload Composer ;
+- appelle `Application::init()` ;
+- instancie `ApplicationDeTest` avec :
+  - un authenticator (`ApplicationTestAuthenticator`),
+  - un connecteur MySQL,
+  - un interceptor (`ApplicationTestInterceptor`).
 
-### 1) `applicationTest\ApplicationDeTest`
+### Classe d'application
 
-- **Class**: concrete demo application.
-- **Documented methods**:
-  - `run(): void`: builds shared generators and the requested page.
-  - `getFavIcon(): string`: returns the favicon path used by the global header.
+`ApplicationDeTest` illustre la structure type d'une application BFMW :
+- `run()` construit l'interface globale :
+  1. header global,
+  2. menu,
+  3. générateur de page active (`$_SESSION[$this->sessionPage]`),
+  4. footer global ;
+- `getFavIcon()` définit le favicon.
 
-### 2) `applicationTest\core\ApplicationTestAuthenticator`
+### Authentification
 
-- **Class**: test authenticator based on `UcaAuthenticator`.
-- **Documented methods**:
-  - `authenticate(): array|false`: delegates to CAS authentication and enriches returned test user data.
+`ApplicationTestAuthenticator` se base sur `UcaAuthenticator` (CAS), puis enrichit l'utilisateur authentifié avec des données de démo (`name`, `status`).
 
-### 3) `applicationTest\core\ApplicationTestInterceptor`
+### Interception
 
-- **Class**: example interceptor for request pre-processing.
-- **Documented methods**:
-  - `frontInterceptor(): bool`: handles `Forms` page POST requests (messages and encoded parameter reading).
-  - `bindingInterceptor(): bool`: handles asynchronous binding callbacks and returns JSON responses.
+`ApplicationTestInterceptor` montre les deux points d'extension majeurs :
 
-### 4) Generators (`applicationTest\generators\*`)
+- `frontInterceptor()` : gestion des requêtes POST classiques (page `Forms`) avant routage normal.
+  - réception d'un formulaire `nom`,
+  - traitement de paramètres encodés,
+  - retour de messages utilisateur.
+- `bindingInterceptor()` : gestion des callbacks asynchrones (`data-bfmw-binding`, `data-bfmw-manual-binding`) avec réponses JSON via `sendBindingResponse()`.
 
-Each generator class has a class DocBlock and a constructor DocBlock.
+## 3) Ce qu'il se passe sur chaque page
 
-- `Accueil::__construct(ApplicationDeTest $application)`: home page + repeatable student block example.
-- `Forms::__construct(ApplicationDeTest $application)`: CSRF, encoded parameters, and binding demo.
-- `Limited::__construct(ApplicationDeTest $application)`: limited layout rendering example.
-- `Maximal::__construct(ApplicationDeTest $application)`: maximal layout rendering example.
-- `Md::__construct(ApplicationDeTest $application)`: Master/Detail example.
-- `Menu::__construct(ApplicationDeTest $application)`: navigation menu and active state.
-- `Modal::__construct(ApplicationDeTest $application)`: modal dialog demo.
-- `TreeView::__construct(ApplicationDeTest $application)`: tree view demo.
+La navigation est définie par `applicationTest/templates/menu.html` et pilotée par le générateur `Menu` qui applique la classe `active` selon la page courante.
 
-## Documentation verification (result)
+### `?p=Accueil` — Démo Master/Detail
 
-Verification result: all PHP classes in the example and all methods declared in `applicationTest`, `applicationTest/core`, and `applicationTest/generators` are documented with DocBlocks.
+- Générateur : `applicationTest/generators/Accueil.php`.
+- Template : `applicationTest/templates/accueil.html`.
+- Comportement :
+  - charge une liste d'étudiants (`Etudiants::getEtudiantsDuDepartement(1,10)`) dans le bloc répété `un_etudiant` ;
+  - affiche une vue Master/Detail (liste à gauche, détail à droite) ;
+  - inclut un token CSRF par défaut ;
+  - simule une latence de rendu (`sleep(2)`) pour tester les états de chargement.
 
-## Example structure
+### `?p=Md` — Démo Master + filtres / Detail
+
+- Générateur : `applicationTest/generators/Md.php`.
+- Template : `applicationTest/templates/md.html`.
+- Comportement :
+  - même principe Master/Detail,
+  - ajoute une zone de filtres (deux `<select>`),
+  - peuple la zone master avec la même source d'étudiants.
+
+### `?p=Limited` — Layout limité
+
+- Générateur : `applicationTest/generators/Limited.php`.
+- Template : `applicationTest/templates/limited.html`.
+- Comportement :
+  - montre le conteneur `limited` pour les pages à largeur contrainte,
+  - sert d'exemple de scroll long et de mise en page standard BFMW.
+
+### `?p=Maximal` — Layout maximal
+
+- Générateur : `applicationTest/generators/Maximal.php`.
+- Template : `applicationTest/templates/maximal.html`.
+- Comportement :
+  - montre le conteneur `maximal` (zone de contenu plus large),
+  - permet de comparer rapidement les comportements CSS entre `limited` et `maximal`.
+
+### `?p=Modal` — Messages et modales
+
+- Générateur : `applicationTest/generators/Modal.php`.
+- Template : `applicationTest/templates/modal.html`.
+- JS associé : `applicationTest/js/specific_modal.js`.
+- Comportement :
+  - déclenche un message automatique au chargement (`data-bfmw-show-message`),
+  - propose des boutons pour afficher des messages de types `error`, `warning`, `info`, `success`,
+  - montre aussi l'apparence d'actions désactivées.
+
+### `?p=Forms` — Formulaires, CSRF, paramètres encodés et binding
+
+- Générateur : `applicationTest/generators/Forms.php`.
+- Template : `applicationTest/templates/forms.html`.
+- JS associé : `applicationTest/js/specific_forms.js`.
+- Interception : `ApplicationTestInterceptor`.
+- Comportement :
+  - injecte plusieurs tokens CSRF (`form`, `param`, `delete`),
+  - injecte des paramètres BFMW encodés (helpers `paramGenerator`),
+  - démontre une soumission POST classique,
+  - démontre une action DELETE simulée (`data-bfmw-method="DELETE"`),
+  - démontre le binding asynchrone sur `input`, `checkbox` (manuel) et `select`,
+  - affiche un retour visuel succès/échec de validation du binding.
+
+### `?p=TreeView` — Arbre hiérarchique
+
+- Générateur : `applicationTest/generators/TreeView.php`.
+- Template : `applicationTest/templates/treeview.html`.
+- Comportement :
+  - initialise un composant arborescent via `data-bfmw-treeview`,
+  - affiche une structure hiérarchique multi-niveaux,
+  - illustre la compatibilité avec la mécanique auto-hide existante (`bfmw_auto_hidder`).
+
+## 4) Ce que l'exemple montre du framework
+
+En pratique, `applicationTest` sert de référence pour :
+
+- **Architecture BFMW** : entrée unique, classe d'application concrète, générateurs spécialisés.
+- **Templating** : affectation simple (`affectToHTML`) et blocs répétés (`affectToBlocAndRepeat`).
+- **Sécurité web** : génération/validation des tokens CSRF.
+- **Transport de contexte** : paramètres encodés côté client puis décodés côté serveur.
+- **UX asynchrone** : binding côté front + interception serveur + retour JSON standardisé.
+- **Composants UI** : menu actif, messages modaux, treeview, layouts limités/maximaux, master/detail.
+
+## 5) Arborescence utile
 
 ```text
 applicationTest/
@@ -86,6 +151,14 @@ applicationTest/
     Modal.php
     TreeView.php
   templates/
+    accueil.html
+    forms.html
+    limited.html
+    maximal.html
+    md.html
+    menu.html
+    modal.html
+    treeview.html
   css/
   js/
 ```
