@@ -9,7 +9,7 @@ It is designed for teams that want:
 - a small templating engine with block-based rendering,
 - and optional ready-to-use front-end helpers (modal, updater, binding, treeview, responsive menu).
 
-> This README documents the current framework architecture and usage. A dedicated examples section will be added later.
+> This README documents the current framework architecture and usage. A dedicated sample branch is available.
 
 ---
 
@@ -209,9 +209,3 @@ src/
 This project is distributed under **CC BY-NC-ND 4.0**.
 
 Please read the license carefully before using it in production or redistributing any part of the framework.
-
----
-
-## Status of examples
-
-A complete "Examples" section (quick start app, form flow, generator wiring, binding/update endpoint pattern) is planned and will be added once development examples are finalized.
