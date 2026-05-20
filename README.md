@@ -1,217 +1,91 @@
-# BFMW
+# BFMW usage example (`applicationTest`)
 
-BFMW is a **lightweight PHP framework** focused on server-rendered pages, secure form handling, and reusable UI building blocks.
+This document describes **only** the `applicationTest` example available in this repository.
 
-It is designed for teams that want:
-- a clear application bootstrap flow,
-- strict request sanitization conventions,
-- built-in CSRF and parameter tokenization,
-- a small templating engine with block-based rendering,
-- and optional ready-to-use front-end helpers (modal, updater, binding, treeview, responsive menu).
+## Example purpose
 
-> This README documents the current framework architecture and usage. A dedicated examples section will be added later.
+This example shows how to assemble a complete BFMW application with:
+- an entry point (`applicationTest/index.php`);
+- a concrete application class (`ApplicationDeTest`);
+- a custom authenticator (`ApplicationTestAuthenticator`);
+- an interceptor for forms and bindings (`ApplicationTestInterceptor`);
+- multiple page generators (`applicationTest/generators/*`);
+- related templates, CSS, and JS assets.
 
----
+## Running the example
 
-## What BFMW is for
+1. Install dependencies:
+   ```bash
+   composer install
+   ```
+2. Configure the expected environment file (`.env`).
+3. Point your web server to `applicationTest/index.php`.
 
-BFMW is a good fit when you build:
-- internal tools,
-- administration portals,
-- business web apps with classic page navigation,
-- applications where form security and predictable request lifecycle matter.
+## Execution flow
 
-It provides a structured base to:
-1. initialize environment + session,
-2. sanitize incoming data,
-3. validate CSRF on POST,
-4. decode short-lived tokenized parameters,
-5. authenticate users,
-6. route to page generators,
-7. render shared header/footer and templates.
+1. `applicationTest/index.php` initializes BFMW with `Application::init()`.
+2. The app instantiates `ApplicationDeTest` with an authenticator, DB connector, and interceptor.
+3. `ApplicationDeTest::run()` builds the global header, menu, active page, and footer.
+4. `ApplicationTestInterceptor` can short-circuit routing to process POST and asynchronous binding requests.
 
----
+## Documentation coverage for example classes and methods
 
-## Core concepts
+### 1) `applicationTest\ApplicationDeTest`
 
-### 1) `Application` as the orchestrator
-You create a concrete class that extends `bfmw\Application`.
+- **Class**: concrete demo application.
+- **Documented methods**:
+  - `run(): void`: builds shared generators and the requested page.
+  - `getFavIcon(): string`: returns the favicon path used by the global header.
 
-The base class handles:
-- autoload registration,
-- environment loading,
-- headers + sanitization,
-- CSRF check for POST requests,
-- parameter-token cleanup policy,
-- DB connection lifecycle start,
-- authentication,
-- routing with admin/non-admin generator resolution.
+### 2) `applicationTest\core\ApplicationTestAuthenticator`
 
-You only need to implement:
-- `run(): void` (your page execution logic),
-- `getFavIcon(): string` (favicon URL for global header rendering).
+- **Class**: test authenticator based on `UcaAuthenticator`.
+- **Documented methods**:
+  - `authenticate(): array|false`: delegates to CAS authentication and enriches returned test user data.
 
-### 2) Generators = page controllers
-BFMW uses `PageGenerator`-based classes as controller/rendering units.
+### 3) `applicationTest\core\ApplicationTestInterceptor`
 
-Built-in generators include:
-- `OverallHeader` (loads common CSS/JS and optional UI modules),
-- `OverallFooter` (shared footer + DB disconnect),
-- `CsrfGenerator` (inline CSRF fields/attributes),
-- `ParametersGenerator` (inline encoded parameter token fields/attributes).
+- **Class**: example interceptor for request pre-processing.
+- **Documented methods**:
+  - `frontInterceptor(): bool`: handles `Forms` page POST requests (messages and encoded parameter reading).
+  - `bindingInterceptor(): bool`: handles asynchronous binding callbacks and returns JSON responses.
 
-### 3) Tokenized request payloads
-Instead of exposing sensitive operational values directly in HTML, BFMW can store payloads in session and send only a generated token in forms/attributes:
-- `Csrf` manages request forgery tokens by logical context,
-- `ParametersEncoder` stores arbitrary parameter arrays behind TTL/one-time tokens.
+### 4) Generators (`applicationTest\generators\*`)
 
-### 4) Templating layer
-BFMW ships with:
-- `TemplateEngine`: low-level parser/compiler,
-- `Templating`: higher-level wrapper for assigning page vars and repeating blocks.
+Each generator class has a class DocBlock and a constructor DocBlock.
 
-This supports:
-- global variable assignment,
-- block iteration,
-- conditional rendering primitives,
-- reusable global templates.
+- `Accueil::__construct(ApplicationDeTest $application)`: home page + repeatable student block example.
+- `Forms::__construct(ApplicationDeTest $application)`: CSRF, encoded parameters, and binding demo.
+- `Limited::__construct(ApplicationDeTest $application)`: limited layout rendering example.
+- `Maximal::__construct(ApplicationDeTest $application)`: maximal layout rendering example.
+- `Md::__construct(ApplicationDeTest $application)`: Master/Detail example.
+- `Menu::__construct(ApplicationDeTest $application)`: navigation menu and active state.
+- `Modal::__construct(ApplicationDeTest $application)`: modal dialog demo.
+- `TreeView::__construct(ApplicationDeTest $application)`: tree view demo.
 
-### 5) Data access abstraction
-`DBConnector` defines the database contract.
+## Documentation verification (result)
 
-`MySQLDBConnector` provides a mysqli implementation including:
-- read helpers,
-- write helpers,
-- transaction helpers,
-- convenience `createData(...)` insertion based on BFMW-secured keys.
+Verification result: all PHP classes in the example and all methods declared in `applicationTest`, `applicationTest/core`, and `applicationTest/generators` are documented with DocBlocks.
 
-### 6) Optional request interception
-`Interceptor` allows pre-routing behavior:
-- `frontInterceptor()`
-- `bindingInterceptor()`
-
-If an interceptor returns `true`, default routing is skipped.
-
----
-
-## Built-in security model
-
-BFMW includes multiple layers by default:
-
-- **Security headers** (`Framework::sendHeaders`) such as CSP, frame protection, referrer policy, etc.
-- **Global input sanitization** (`Framework::sanitize`) for `$_GET`, `$_POST`, `$_COOKIE`, `$_REQUEST`.
-- **Dual-value secure mapping** (`Helpers::manualBfmwSecure`) creating:
-  - `bfmw_orig_*` values,
-  - `bfmw_num_*` numeric-normalized values.
-- **CSRF validation on POST**: invalid token clears `$_POST` before business logic.
-- **Token expiry + one-time semantics** for CSRF and encoded parameters.
-- **Session cookie hardening** in `Authenticator` (`HttpOnly`, `SameSite=Strict`, conditional `Secure`).
-
----
-
-## Front-end assets included
-
-The package contains default CSS and JavaScript modules under `src/css` and `src/js`.
-
-Notable built-in JS features:
-- load queues,
-- responsive menu toggling,
-- master/detail responsive behavior,
-- loading overlay during submits/navigation,
-- modal message display,
-- binding/update helpers,
-- request helper functions,
-- treeview interactions.
-
-`OverallHeader` auto-injects BFMW asset bundles and optional local page assets (`css/style.css`, `js/main.js`, and per-page `specific_<page>.css/js` when present).
-
----
-
-## Installation
-
-### Requirements
-- PHP `>= 8.5`
-- Extensions:
-  - `ext-mysqli`
-  - `ext-intl`
-  - `ext-simplexml`
-
-### Composer
-```bash
-composer require b_fmw/bfmw
-```
-
-### Autoload namespace
-```json
-"autoload": {
-  "psr-4": {
-    "bfmw\\": "src/"
-  }
-}
-```
-
----
-
-## Project integration checklist
-
-When integrating BFMW into an app:
-
-1. **Initialize once** with `Application::init()` before creating your application instance.
-2. **Provide an environment file** and call the parent constructor with its path.
-3. **Implement an `Authenticator`** subclass:
-   - `authenticate()`
-   - `isAdmin()`
-   - `isRegistered()`
-4. **Provide a `DBConnector`** (typically `MySQLDBConnector`).
-5. **Implement your concrete `Application::run()`** to instantiate and execute your page generator(s).
-6. **Use BFMW templates/generators** for consistent header/footer and secure inline tokens.
-7. **Read request data using BFMW conventions** (`bfmw_orig_*` / `bfmw_num_*`).
-
----
-
-## Runtime flow (high-level)
-
-A typical request follows this order:
-
-1. Session starts (if not active).
-2. Environment variables are loaded from file.
-3. Security headers are sent.
-4. Superglobals are sanitized and transformed.
-5. If POST, CSRF is validated.
-6. Parameter tokens are cleaned when no encoded payload is posted.
-7. Timezone is configured.
-8. Database connector is initialized and connected.
-9. Authentication is executed and persisted in session.
-10. Interceptors run (binding/front).
-11. Router resolves page generator (including admin fallback logic).
-12. Your `run()` executes page rendering and logic.
-
----
-
-## Directory overview
+## Example structure
 
 ```text
-src/
-  core/            # application lifecycle, security, helpers, DB abstraction
-  templating/      # template engine + wrapper
-  generators/      # reusable generators (header/footer/csrf/params)
-  repository/      # abstract repository base
-  css/             # framework styles
-  js/              # framework JS modules
-  images/          # framework assets
-  global_templates/# shared template fragments
+applicationTest/
+  index.php
+  ApplicationDeTest.php
+  core/
+    ApplicationTestAuthenticator.php
+    ApplicationTestInterceptor.php
+  generators/
+    Accueil.php
+    Forms.php
+    Limited.php
+    Maximal.php
+    Md.php
+    Menu.php
+    Modal.php
+    TreeView.php
+  templates/
+  css/
+  js/
 ```
-
----
-
-## Licensing
-
-This project is distributed under **CC BY-NC-ND 4.0**.
-
-Please read the license carefully before using it in production or redistributing any part of the framework.
-
----
-
-## Status of examples
-
-A complete "Examples" section (quick start app, form flow, generator wiring, binding/update endpoint pattern) is planned and will be added once development examples are finalized.
