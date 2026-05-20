@@ -1,24 +1,5 @@
 {
-  "name": "b_fmw/bfmw",
-  "type": "framework",
-  "description": "Simple php framework",
-  "minimum-stability": "stable",
-  "license": "CC-BY-NC-ND-4.0",
-  "authors": [
-    {
-      "name": "Cédric BOUHOURS",
-      "email": "c.bouhours@free.fr"
-    }
-  ],
   "require": {
-    "php": ">=8.5",
-    "ext-mysqli": "*",
-    "ext-intl": "*",
-    "ext-simplexml": "*"
-  },
-  "autoload": {
-    "psr-4": {
-      "bfmw\\": "src/"
-    }
+    "b_fmw/bfmw": "dev-main"
   }
 }
