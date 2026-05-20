@@ -1,0 +1,332 @@
+@startuml
+hide circle
+allowmixing
+skinparam classAttributeIconSize 0
+skinparam classBackgroundColor #ffffb9
+skinparam classBorderColor #800000
+skinparam classArrowColor #800000
+skinparam classFontColor #black
+skinparam classFontName Tahoma
+
+left to right direction
+
+abstract class Application {
+  <<final>> {static}+GENERATORS_FOLDER: string
+  <<final>> {static}+ADMIN_FOLDER: string
+  <<final>> {static}+DEFAULT_GENERATOR: string
+  +sessionPage: string
+
+  + {static} init() : void
+  + {static} autoload(class : string) : void
+  +Application($env_file : string, $authenticator : Authenticator, $sessionPage : string, $dbConnector : DBConnector, $interceptors : Interceptor = new Interceptor()
+  -executeFirstProcess(): void
+  -route(): void
+  +getAuthenticators(): Authenticator
+  +makeGenerator($generator : string, $args : array = []): PageGenerator
+  {abstract} + run(): void
+  {abstract} + getFavIcon(): string
+}
+
+Application --> "+ __globalHelpers__"  Helpers
+Application --> "+ __dataHelpers__" DBConnector
+Application --> "- framework" Framework
+Application --> "authenticator #" Authenticator
+Application ..> Interceptor
+Application ..> Csrf
+Application ..> EnvLoader
+Application ..> PageGenerator
+Application ..> ParametersEncoder
+
+abstract class Authenticator {
+  {abstract} +authenticate(): array|false
+  {abstract} +isAdmin(): bool
+  {abstract} +isRegistered(): bool
+  +breakSession(): void
+  +saveAsSession($data : array): void
+}
+
+class Csrf <<final>> {
+  <<final>> {static} - SESSION_KEY : string
+  -purgeExpired(): void
+  +token($id : string = 'default', $ttlSeconds : int = 3600, $oneTime : bool = true): string
+  +validateFromPost(): bool
+}
+
+class Comparator {
+  -key: string
+  -elementToCompare: ?string
+  -selector: string
+  -trueValue: string
+  -falseValue: string
+
+  +Comparator($key : string, $elementToCompare : ?string, $selector : string = "SELECTED", $trueValue : string = "selected", $falseValue : string = "")
+  +getKey(): string
+  +getElementToCompare(): ?string
+  +getSelector(): string
+  +getTrueValue(): string
+  +getFalseValue(): string
+}
+
+interface DBConnector {
+  +disconnect(): void
+  +getData($req : string): array
+  +getDataWithKey($clef : string, $req : string): array
+  +doRequest($req : string)
+  +execRequest($req : string): bool
+  +execMultiRequest($req : string): bool
+  +execRequestReturnAffectedLines($req : string): int
+  +execRequestReturnLastId($req : string): int
+  +startTransaction(): void
+  +commit(): void
+  +rollback(): void
+  +createData($table_name : string,$data : array,$fields_to_use : int,$show_query : bool = false): int
+}
+
+class EnvLoader <<final>> {
+  -normalizeValue(string $value): string
+  +load($path : string, $override : bool = false): void
+}
+
+class Framework {
+  +sendHeaders(): void
+  +sanitize(): void
+}
+
+Framework ..> Application
+
+class Helpers {
+  <<final>> {static} MAGIC_DATE_YEAR : int
+  <<final>> {static} MAGIC_DATE_MONTH : int
+  <<final>> {static} MAGIC_DATE_DAY : int
+  <<final>> ERROR_MESSAGES : string
+
+  +manualBfmwSecure(&$process : array): void
+  +getNumeric($val : mixed) : mixed
+  +bfmwAddSecured(&$data : array,$field : string,$value : mixed)
+  +makeMessage($messageType : mixed, $titre : mixed, $message : mixed): void
+  +isErreur(): bool
+  +formatDate($date : DateTimeInterface, $pattern : string = "EEEE d MMMM yyyy"): string
+  +computeAge($dateOfBirth : string): int
+  +parseDate($date : string|DateTimeInterface): DateTimeImmutable
+  +parseDateEndOfDay($date : string|DateTimeInterface): DateTimeImmutable
+  +parseTime($time : string, $separator : ?string = null): array
+  +dateTimeFromCombined($combined : string): DateTimeImmutable
+  +extractTimeFromTimestamp($timestamp : int): DateTimeImmutable
+  +extractDateFromTimestamp($timestamp : int): DateTimeImmutable
+  +redirectWithoutQueryParam($paramsToKeep : string...): void
+}
+
+Helpers --> "+csrf" CsrfGenerator
+Helpers --> "+paramGenerator" ParametersGenerator
+
+class HtmlHeadGenerator {
+  <<final>> FILE_TYPES : array
+  -assetDirectory: string
+  -publicDirectory: string
+
+  +HtmlHeadGenerator($assetDirectory : string, $publicDirectory : string)
+  -listAssets(): array
+  -buildTag($fileName : string): string
+  +generate(): string
+}
+
+class Interceptor {
+  +frontInterceptor(): bool
+  +bindingInterceptor(): bool
+  #sendBindingResponse($success : bool, $messageType : string = "", $messageTitle : string = "", $message : string = ""): void
+}
+
+class MySQLDBConnector {
+  #conn: mysqli
+  -{static} queryCache: array
+
+  -executeQuery(string $req): array
+  +connect(): void
+  +disconnect(): void
+  +getData($req : string): array
+  +getDataWithKey($clef : string, $req : string): array
+  +doRequest($req : string)
+  +execRequest($req : string): bool
+  +execMultiRequest($req : string): bool
+  +execRequestReturnAffectedLines($req : string): int
+  +execRequestReturnLastId($req : string): int
+  +startTransaction(): void
+  +commit(): void
+  +rollback(): void
+  +createData($table_name : string,$data : array,$fields_to_use : int,$show_query : bool = false): int
+}
+
+MySQLDBConnector ..|> DBConnector
+
+abstract class PageGenerator {
+  +PageGenerator(Templating $engine)
+}
+
+ParametersGenerator --> "+engine" templating.Templating
+
+class ParametersEncoder <<final>> {
+  -<<final>> {static} SESSION_KEY : string
+
+  -purgeExpired(): void
+  +token($params : array, $ttlSeconds : int = 3600, $oneTime : bool = true): string
+  +getParams($token : string): ?array
+  +cleanAllParameters(): void
+}
+
+class SimpleCAS {
+  -<<final>> CAS_NS : string
+
+  -parseServiceValidateResponse($xmlString : string): array
+  -getCurrentUrl($baseUrl : ?string = null): string
+  -buildServiceUrlWithoutCasParams($url : string): string
+  -requestContainsTicket(): bool
+  +authenticate($host : string,$port : int,$context : string, $baseUrl : ?string = null, $disableSSLValidation : bool = false): array
+}
+
+package generators {
+
+class CsrfGenerator {
+  +generateInline($mode : string, $context : string, $oneTime : bool = true, $ttlSeconds : int = 3600): string
+}
+
+class OverallFooter {
+  +OverallFooter($application : Application)
+}
+
+OverallFooter ..> Application
+OverallFooter ..> Templating
+
+class OverallHeader {
+  - <<final>> PACKAGE_SOURCE_PATH : string
+  - <<final>> PACKAGE_ASSET_BASE_URL : string
+  +OverallHeader($application : Application, $withModal : bool = true, $withUpdater : bool = true)
+}
+
+OverallHeader ..> Application
+OverallHeader ..> Helpers
+OverallHeader ..> HtmlHeadGenerator
+OverallHeader ..> Templating
+
+class ParametersGenerator {
+  +generateInline($mode : string, $data : array,$oneTime : bool = true, $ttlSeconds : int = 3600): string
+}
+
+ParametersGenerator ..> ParametersEncoder
+ParametersGenerator ..> Templating
+
+}
+
+generators --|> PageGenerator
+
+class AbstractRepository {
+  +AbstractRepository(DBConnector $connector)
+}
+
+AbstractRepository --> "connector #" DBConnector
+
+package templating {
+
+class TemplateEngine {
+    - //...
+}
+
+class Templating {
+  -template_root: string
+  -identificatorName: string
+
+  +Templating($identificatorName : string, $filePath : string, $template_root : string = "templates")
+  -setAttachment($filePath : string): void
+  +affectToHTML($var_table : array): void
+  +openBloc($bloc_name : string): void
+  +affectToBloc($bloc_name : string, $var_table : array): void
+  +affectToBlocAndRepeat($blocName : string, $data : array, $comparator : ?Comparator = null, $multiplicator : ?array = null, $toDoAtEnd : ?Closure = null, $keyWithoutRepeat : ?string = null): ?string
+  +generateCompleteHTML($withoutEcho : bool = false): bool|string
+}
+
+Templating --> "- template" TemplateEngine
+Templating ..> Comparator
+
+}
+
+class ApplicationTestAuthenticator #ff9999 {
+    + authenticate(): array|false
+}
+
+ApplicationTestAuthenticator --|> UcaAuthenticator
+
+class ApplicationTestInterceptor #ff9999 {
+    + frontInterceptor() : bool
+    + bindingInterceptor() : bool
+
+}
+
+ApplicationTestInterceptor --|> Interceptor
+ApplicationTestInterceptor ..> ParametersEncoder
+ApplicationTestInterceptor ..> Application
+
+class ApplicationDeTest #ff9999 {
+  + run(): void
+  + getFavIcon(): string
+}
+
+ApplicationDeTest --|> Application
+
+class UcaAuthenticator #ff9999 {
+  + authenticate(): array|false
+  + isAdmin(): bool
+  + isRegistered(): bool
+}
+
+UcaAuthenticator --|> Authenticator
+UcaAuthenticator ..> SimpleCAS
+
+class Etudiants #ff9999 {
+    + getEtudiantsDuDepartement($dept_id : int,$annee_id : int) : array
+}
+
+Etudiants --|> AbstractRepository
+Etudiants ..> Application
+
+class index #ffbbbb {
+  {static} + main()
+}
+
+index ..> ApplicationTestAuthenticator
+index ..> ApplicationTestInterceptor
+index ..> Application
+index ..> ApplicationDeTest
+index ..> MySQLDBConnector
+
+package pages {
+
+class Accueil #ff9999 {
+  + Accueil(application : ApplicationDeTest)
+}
+
+Accueil ..> Etudiants
+
+class Forms #ff9999 {
+  + Forms(application : ApplicationDeTest)
+}
+
+Forms ..> Application
+
+class Limited #ff9999 {
+  + Limited(application : ApplicationDeTest)
+}
+
+Limited ..> Etudiants
+
+class Md #ff9999 {
+  + Md(application : ApplicationDeTest)
+}
+
+Md ..> Etudiants
+
+}
+
+pages --|> PageGenerator
+pages ..> templating
+pages ..> ApplicationDeTest
+
+@enduml
